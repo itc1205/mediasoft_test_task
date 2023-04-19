@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/pico.min.css">
+    <title>Test task</title>
+</head>
+
+<body>
+    <nav class="container-fluid">
+        <ul>
+            <li>
+                <a href="/" class="contrast">
+                    <div class="contrast"><strong>MediaSoft Тестовое Задание</strong></div>
+                </a>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <details role="list" dir="rtl">
+                    <summary aria-haspopup="listbox" role="link" class="contrast">Примеры</summary>
+                    <ul role="listbox">
+                        <li><a href="/city/">GET city</a></li>
+                        <li><a href="/city/street/">GET street</a></li>
+                        <li><a href="/shop/street_form/">GET forms for streets</a></li>
+                    </ul>
+                </details>
+            </li>
+            <li>
+                <details role="list" dir="rtl">
+                    <summary aria-haspopup="listbox" role="button">Темы</summary>
+                    <ul role="listbox">
+                        <li><a href="#" data-theme-switcher="auto">Авто</a></li>
+                        <li><a href="#" data-theme-switcher="light">Светлая</a></li>
+                        <li><a href="#" data-theme-switcher="dark">Темная</a></li>
+                    </ul>
+                </details>
+            </li>
+        </ul>
+    </nav>
+    <main class="container">
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+<script src="/static/js/theme.js"></script>
+
+</html>
