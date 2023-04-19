@@ -14,7 +14,7 @@ errors = {
  }
 }
 
-error_blueprint = Blueprint("error_page", __name__)
+error_blueprint = Blueprint("error_page", __name__, "templates")
 
    
 @error_blueprint.app_errorhandler(Exception)
@@ -23,4 +23,4 @@ def handle_error(e):
       error = errors[e.code]
       return render_template("error.html.j2", **error), error["number"]
    else:
-      return 'Something really fucked up', e
+      return 'Something really reallyyyyy fucked up', e #В случае серверных ошибок
