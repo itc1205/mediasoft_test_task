@@ -14,14 +14,15 @@ from .city import City
 
 class Street(SqlAlchemyBase):
 #########################################################
-    __tablename__ = 'streets'
+    __tablename__ = 'street_table'
 #########################################################
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column()
 
-    city: Mapped["City"] = relationship()
-    #shops: Mapped[List["Shop"]] = relationship()
+    city: Mapped["City"] = relationship(back_populates="streets")
+    
+    shops: Mapped[List["Shop"]] = relationship(back_populates="street")
 
 #########################################################
-    city_id : Mapped[int] = mapped_column(ForeignKey("cities.id"))
+    city_id : Mapped[int] = mapped_column(ForeignKey("city_table.id"))
 

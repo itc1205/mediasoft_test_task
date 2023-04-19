@@ -3,14 +3,16 @@ from werkzeug.exceptions import HTTPException
 
 errors = {
  404 : {
-    "number" : 404,
     "name" : "Страница не найдена",
     "description" : "Вероятнее всего вы попали не на ту страницу"
  },
  400 : {
-   "number" : 400,
    "name" : "Неверный запрос",
    "description" : "Вероятнее всего вы неверно оформили запрос"
+ },
+ 500 : {
+   "name" : "Серверу конец",
+   "description" : "Помянем прод"
  }
 }
 
@@ -21,6 +23,6 @@ error_blueprint = Blueprint("error_page", __name__, "templates")
 def handle_error(e):
    if isinstance(e, HTTPException):
       error = errors[e.code]
-      return render_template("error.html.j2", **error), error["number"]
+      return render_template("error.html.j2", number=e.code, **error), e.code
    else:
-      return 'Something really reallyyyyy fucked up', e #В случае серверных ошибок
+      return render_template("error.html.j2", number=500, name=errors[500]["name"], description=e) #В случае серверных ошибок

@@ -16,18 +16,18 @@ from .street import Street
 
 class Shop(SqlAlchemyBase):
 #########################################################
-    __tablename__ = 'shops'
+    __tablename__ = 'shop_table'
 #########################################################    
 
     id: Mapped[int] = mapped_column(primary_key=True)
     
     name: Mapped[str] = mapped_column() 
-    city: Mapped["City"] = relationship()
-    street: Mapped["Street"] = relationship()
-    home: Mapped[int] = mapped_column() #Дом обозначается в цифровом представлении
+    city: Mapped["City"] = relationship(back_populates="shops")
+    street: Mapped["Street"] = relationship(back_populates="shops")
+    house: Mapped[int] = mapped_column() #Дом обозначается в цифровом представлении
     opening_time: Mapped[dt.time] = mapped_column()
     closing_time: Mapped[dt.time] = mapped_column()   
 
 #########################################################
-    city_id : Mapped[int] = mapped_column(ForeignKey("cities.id"))
-    street_id : Mapped[int] = mapped_column(ForeignKey("streets.id"))
+    city_id : Mapped[int] = mapped_column(ForeignKey("city_table.id"))
+    street_id : Mapped[int] = mapped_column(ForeignKey("street_table.id"))

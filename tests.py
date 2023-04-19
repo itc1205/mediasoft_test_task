@@ -36,7 +36,7 @@ def test_shop():
     
     shop.city = city
     shop.street = street
-    shop.home = 60
+    shop.house = 60
     shop.name = "Magnit"
     shop.opening_time = dt.datetime.now().time()
     shop.closing_time = dt.datetime.now().time()

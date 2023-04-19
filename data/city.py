@@ -13,12 +13,13 @@ from .db_session import SqlAlchemyBase
 
 class City(SqlAlchemyBase):
 #########################################################
-    __tablename__ = 'cities'
+    __tablename__ = 'city_table'
 #########################################################
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column()
+    shops: Mapped[List["Shop"]] = relationship(back_populates="city")
+    streets: Mapped[List["Street"]] = relationship(back_populates="city")
 
 #########################################################
-    #streets: Mapped[List["Street"]] = relationship(back_populates="cities")
     #shops: Mapped[List["Shop"]] = relationship(back_populates="cities")
