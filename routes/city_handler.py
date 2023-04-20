@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, abort
 
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import Query
@@ -32,4 +32,6 @@ def get_streets_from_db(city_id: int):
 @city_blueprint.route('/<int:city_id>/street/', methods=["GET"])
 def get_streets(city_id:int):
     streets = get_streets_from_db(city_id)
+    if streets == None:
+        abort(400)
     return render_template("streets.html.j2", streets=streets)

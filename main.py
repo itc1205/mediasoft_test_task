@@ -1,11 +1,15 @@
-from flask import Flask, request, render_template
+from flask import Flask
 
 from data import db_session
 
-from routes.city_handlers import city_blueprint
-from routes.error_handlers import error_blueprint
-from routes.index import index_blueprint
-from routes.shop_handlers import shop_blueprint
+from routes.city_handler import city_blueprint
+from routes.error_handler import error_blueprint
+from routes.index_handler import index_blueprint
+from routes.shop_handler import shop_blueprint
+
+from dotenv import load_dotenv
+
+import configure_env
 
 app = Flask(__name__)
 
@@ -19,4 +23,9 @@ def main() -> None:
     app.run(host='0.0.0.0', port=8080)
 
 if __name__ == "__main__":
+    if not load_dotenv(".env"):
+        print("Внимание, файл .env недоступены. Запускаю средство для создания .env")
+        configure_env.setup()
+    if not load_dotenv(".env"):
+        raise Exception("Невозможно загрузить .env!")
     main()

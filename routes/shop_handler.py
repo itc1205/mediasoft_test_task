@@ -1,5 +1,5 @@
 from flask import Blueprint, request, abort, render_template
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 
 from werkzeug.exceptions import HTTPException
 from werkzeug import Response
@@ -123,23 +123,73 @@ def create_new_shop():
     
     return "", 200
 
-def prepare_shop(shop: Shop, session: scoped_session) -> dict:
+def dictify_shop(shop: Shop, session: scoped_session) -> dict:
     shop_as_dict = shop.as_dict()
     shop_as_dict['city'] = session.get(City, shop_as_dict["city_id"]).name
     shop_as_dict['street'] = session.get(Street, shop_as_dict["street_id"]).name
     return shop_as_dict
 
+def check_open(_open: str) -> bool:
+    if _open == None:
+        return True
+    try:
+        _open = int(_open)
+    except ValueError:
+        return False
+    if _open not in (0, 1):
+        return False
+    return True
+
+def filter_streets(street: str, q_shops: Query[Shop]) -> Query[Shop]:
+    if street == None:
+        return q_shops
+    return q_shops.join(Street).filter(Street.name == street)
+
+def filter_cities(city: str, q_shops: Query[Shop]) -> Query[Shop]:
+    if city == None:
+        return q_shops
+    return q_shops.join(City).filter(City.name == city)
+
+def filter_time(_open: str, q_shops: Query[Shop]) -> Query[Shop]:
+    if _open == None:
+        return q_shops
+    server_time = dt.now().time()
+    
+    _open = int(_open)
+    
+    if _open == 0: # Closed
+        return q_shops.filter(or_(
+            Shop.closing_time < server_time,
+            Shop.opening_time > server_time
+        ))
+    elif _open == 1: # Open
+        return q_shops.filter(and_(
+            Shop.closing_time >= server_time,
+            Shop.opening_time <= server_time
+        ))
+
 @shop_blueprint.route("/", methods=["GET"])
 def get_shops():
     street = request.args.get("street")
     city = request.args.get("city")
-    open = request.args.get("open")
+    _open = request.args.get("open")
+
+    if not check_open(_open):
+        abort(400)
 
     session = scoped_session(db_session.create_session())
     shops = []
-    q_shops = session.query(Shop)
-    for shop in q_shops:
-        shops.append(prepare_shop(shop, session))
+    q_shops =   filter_time(_open,
+                filter_cities(city,
+                filter_streets(street,
+                session.query(Shop))))
+    
+    if q_shops != None:
+        for shop in q_shops:
+            shops.append(dictify_shop(shop, session))
 
-    print(shops[0])
     return render_template("shops.html.j2", shops=shops)
+
+@shop_blueprint.route("/form/", methods=["GET"])
+def get_form():
+    return render_template("shops_form.html.j2")

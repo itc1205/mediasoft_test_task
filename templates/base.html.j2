@@ -24,8 +24,9 @@
                     <summary aria-haspopup="listbox" role="link" class="contrast">Примеры</summary>
                     <ul role="listbox">
                         <li><a href="/city/">GET city</a></li>
-                        <li><a href="/city/street/">GET street</a></li>
-                        <li><a href="/shop/street_form/">GET forms for streets</a></li>
+                        <li><a href="/shop/">GET shops</a></li>
+                        <li><a href="/city/1/street/">GET street</a></li>
+                        <li><a href="/shop/form/">POST form for shops</a></li>
                     </ul>
                 </details>
             </li>
@@ -42,10 +43,8 @@
         </ul>
     </nav>
     <main class="container">
-
         {% block content %}{% endblock %}
     </main>
 </body>
 <script src="/static/js/theme.js"></script>
-
 </html>
