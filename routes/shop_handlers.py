@@ -1,4 +1,4 @@
-from flask import Blueprint, request, abort
+from flask import Blueprint, request, abort, render_template
 from sqlalchemy import and_
 
 from werkzeug.exceptions import HTTPException
@@ -26,7 +26,7 @@ shop_json_keys = {
 }
 
 def check_for_data_correctness(data: dict) -> bool:
-    #Проверяем получили ли мы наш json'чик правильно
+    """Функция для проверки правильности типов и ключей в сыром json'е"""
     if data == None:
         return False
     if "shop" not in data.keys():
@@ -48,7 +48,7 @@ def check_for_data_correctness(data: dict) -> bool:
         return False
     
     try:
-        dt.strptime(data["shop"]["opening_time"], "%H:%M")
+        dt.strptime(data["shop"]["opening_time"], "%H:%M") # Чисто в теории мы могли бы возвращать наше время и оптимизировать время запроса но эээаааээ 
     except ValueError:
         return False
     
@@ -60,8 +60,6 @@ def check_for_data_correctness(data: dict) -> bool:
     return True
 
 def check_if_shop_exists(shop_data: dict, session: scoped_session) -> bool:
-    print("OK")
-    print(shop_data)
     shop = session.query(Shop).join(City).join(Street).filter(
         and_(
             Shop.name == shop_data["name"],
@@ -123,4 +121,25 @@ def create_new_shop():
     session.add(shop)
     session.commit()
     
-    return ""
+    return "", 200
+
+def prepare_shop(shop: Shop, session: scoped_session) -> dict:
+    shop_as_dict = shop.as_dict()
+    shop_as_dict['city'] = session.get(City, shop_as_dict["city_id"]).name
+    shop_as_dict['street'] = session.get(Street, shop_as_dict["street_id"]).name
+    return shop_as_dict
+
+@shop_blueprint.route("/", methods=["GET"])
+def get_shops():
+    street = request.args.get("street")
+    city = request.args.get("city")
+    open = request.args.get("open")
+
+    session = scoped_session(db_session.create_session())
+    shops = []
+    q_shops = session.query(Shop)
+    for shop in q_shops:
+        shops.append(prepare_shop(shop, session))
+
+    print(shops[0])
+    return render_template("shops.html.j2", shops=shops)

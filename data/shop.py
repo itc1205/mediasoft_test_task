@@ -31,3 +31,6 @@ class Shop(SqlAlchemyBase):
 #########################################################
     city_id : Mapped[int] = mapped_column(ForeignKey("city_table.id"))
     street_id : Mapped[int] = mapped_column(ForeignKey("street_table.id"))
+    
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
