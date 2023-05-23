@@ -24,7 +24,7 @@ def main() -> None:
 
 if __name__ == "__main__":
     if not load_dotenv(".env"):
-        print("Внимание, файл .env недоступены. Запускаю средство для создания .env")
+        print("Внимание, файл .env недоступен. Запускаю средство для создания .env")
         configure_env.setup()
     if not load_dotenv(".env"):
         raise Exception("Невозможно загрузить .env!")

@@ -19,16 +19,17 @@ SqlAlchemyBase = dec.declarative_base()
 
 __factory = None
 
+
 def global_init(db_file: str = None) -> None:
     global __factory
 
     if __factory:
         return
-    
+
     if not db_file or not db_file.strip():
         raise Exception("Не указан файл базы данных!")
     connection_url = ""
-    
+
     if DB == _DB_TYPE.PostgreSQL:
         connection_url = URL.create(
             drivername="postgresql",
@@ -43,8 +44,8 @@ def global_init(db_file: str = None) -> None:
     engine = sa.create_engine(connection_url, echo=False)
     __factory = orm.sessionmaker(bind=engine)
 
-    from . import __all_models
-    
+    from . import models
+
     SqlAlchemyBase.metadata.create_all(engine)
 
 
